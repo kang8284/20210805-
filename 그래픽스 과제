@@ -1,0 +1,75 @@
+//20210805강현식 그래픽스 과제 
+let cols, rows;
+let scl = 20;
+let w = 1400;
+let h = 1000;
+let flying = 0;
+let i = 0;
+
+let terrain = [];
+
+function setup() {
+  createCanvas(600, 600, WEBGL);
+  cols = w / scl;
+  rows = h / scl;
+
+  for (var x = 0; x < cols; x++) {
+    terrain[x] = [];
+    for (var y = 0; y < rows; y++) {
+      terrain[x][y] = 0; //specify a default value for now
+    }
+  }
+  noStroke()
+}
+
+
+function draw() {
+
+  flying -= 0.1;
+  var yoff = flying;
+  for (var y = 0; y < rows; y++) {
+    var xoff = 0;
+    for (var x = 0; x < cols; x++) {
+      terrain[x][y] = map(noise(xoff, yoff), 0, 1, -100, 100);
+      xoff += 0.2;
+    }
+    yoff += 0.2;
+  }
+
+
+  background(20,255,255);
+  translate(0, 100);
+  rotateX(PI / 2);
+  fill(164, 164, 164, 196);
+  translate(-w / 2, -h / 2);
+  for (let y = 0; y < rows - 1; y++) {
+    beginShape(TRIANGLE_STRIP);
+    for (let x = 0; x < cols; x++) {
+      let v = terrain[x][y];
+      fill(v+255, v+100, v+128, v+100)
+      vertex(x * scl, y * scl, terrain[x][y]);
+      vertex(x * scl, (y + 1) * scl, terrain[x][y + 1]);
+    }
+    endShape();
+
+  }
+  push(); translate(w / 2, h / 2);
+  translate(0, 0,150);
+  rotateX(PI / -2);
+
+  fill(0,10,255)
+  ellipsoid(30,30,100)
+  fill(0,40,200)
+  ellipsoid(120,10,30)
+  translate(0, -10, 74);
+  fill(0,100,200)
+  ellipsoid(60,10,20)
+  translate(0, -20, 0);
+  ellipsoid(10,30,20);
+  translate(0, 20, 40);
+  rotateZ(i++)
+  fill(255)
+  ellipsoid(10,50,10);
+  
+  pop();//비행기 들어갈 자리
+}
